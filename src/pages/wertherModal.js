@@ -67,6 +67,7 @@ const InfoValueItemSpan = styled.span`
 const WeatherModal = (props) => {
 
     const [tableList, setTebleList] = useState();
+    const [weatherStatus, setWeatherStatus] = useState();
     const columns = [
         {
             title: '時段',
@@ -145,6 +146,7 @@ const WeatherModal = (props) => {
                 });
 
                 setTebleList(periodData);
+                setWeatherStatus(periodData[0]?.wxValue);
 
             }
         } catch (error) {
@@ -191,7 +193,6 @@ const WeatherModal = (props) => {
 
     useEffect(() => {
         getForeCast();
-        console.log(props);
     }, [props.data.area]);
 
     return (
@@ -233,7 +234,9 @@ const WeatherModal = (props) => {
                     </Row>
                 </Col>
                 <Col span={10}>
-                    <WeatherImage/>
+                    <WeatherImage
+                        wxValue = {weatherStatus}
+                    />
                 </Col>
             </Row>
             <TableStyle
