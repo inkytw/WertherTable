@@ -107,34 +107,34 @@ const WeatherModal = (props) => {
         try {
             const response = await weatherForecast(props.data?.city);
             if (response.status === 200) {
-                let data = [];
+                let periodData = [];
                 const location = response.data.records.location[0];
 
                 if (location.weatherElement.length) {
                     const firstElement = location.weatherElement[0];
 
-                    data.push({
+                    periodData.push({
                         startTime: firstElement.time[0].startTime,
                         endTime: firstElement.time[0].endTime
                     });
-                    data.push({
+                    periodData.push({
                         startTime: firstElement.time[1].startTime,
                         endTime: firstElement.time[1].endTime
                     });
-                    data.push({
+                    periodData.push({
                         startTime: firstElement.time[2].startTime,
                         endTime: firstElement.time[2].endTime
                     });
                 }
 
-                const wx = location.weatherElement.find(x => x.elementName === 'Wx');
-                const poP = location.weatherElement.find(x => x.elementName === 'PoP');
-                const minT = location.weatherElement.find(x => x.elementName === 'MinT');
-                const maxT = location.weatherElement.find(x => x.elementName === 'MaxT');
-                const ci = location.weatherElement.find(x => x.elementName === 'CI');
+                const wx = location.weatherElement.find(data => data.elementName === 'Wx');
+                const poP = location.weatherElement.find(data => data.elementName === 'PoP');
+                const minT = location.weatherElement.find(data => data.elementName === 'MinT');
+                const maxT = location.weatherElement.find(data => data.elementName === 'MaxT');
+                const ci = location.weatherElement.find(data => data.elementName === 'CI');
 
-                for (let index in data) {
-                    let item = data[index];
+
+                periodData.forEach((item, index) => {
                     item.period = getPeriod(item.startTime);
                     item.wxName = wx.time[index].parameter.parameterName;
                     item.wxValue = wx.time[index].parameter.parameterValue;
@@ -142,10 +142,9 @@ const WeatherModal = (props) => {
                     item.minT = minT.time[index].parameter.parameterName;
                     item.maxT = maxT.time[index].parameter.parameterName;
                     item.ci = ci.time[index].parameter.parameterName;
-                }
+                });
 
-                console.log(data);
-                setTebleList(data);
+                setTebleList(periodData);
 
             }
         } catch (error) {
@@ -192,7 +191,8 @@ const WeatherModal = (props) => {
 
     useEffect(() => {
         getForeCast();
-    }, []);
+        console.log(props);
+    }, [props.data.area]);
 
     return (
         <ModalStyle
